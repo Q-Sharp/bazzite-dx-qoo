@@ -12,8 +12,8 @@ cp -avf "/ctx/system_files"/. /
 # List of rpmfusion packages can be found here:
 # https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/43/x86_64/repoview/index.html&protocol=https&redirect=1
 
-# this installs a package from fedora repos
-dnf5 install -y tmux
+dnf5 install -y coolercontrol liquidctl tmux
+
 
 # Use a COPR Example:
 #
@@ -21,6 +21,21 @@ dnf5 install -y tmux
 # dnf5 -y install package
 # Disable COPRs so they don't end up enabled on the final image:
 # dnf5 -y copr disable ublue-os/staging
+
+### Build nct6687 out-of-tree module (MSI NCT6687D-R fan control)
+KVER="$(rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}')"
+
+dnf5 install -y kernel-devel-matched gcc make git
+
+git clone --depth 1 https://github.com/Fred78290/nct6687d /tmp/nct6687d
+make -C "/usr/src/kernels/${KVER}" M=/tmp/nct6687d modules
+
+install -D -m 0644 /tmp/nct6687d/nct6687.ko \
+    "/usr/lib/modules/${KVER}/extra/nct6687.ko"
+depmod -a "${KVER}"
+
+dnf5 remove -y kernel-devel-matched gcc make git
+rm -rf /tmp/nct6687d
 
 #### Example for enabling a System Unit File
 
