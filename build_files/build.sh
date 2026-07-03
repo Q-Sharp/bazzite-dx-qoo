@@ -22,7 +22,7 @@ make -C "/usr/src/kernels/${KVER}" M=/tmp/nct6687d modules
 if [[ -f /ctx/MOK.priv ]]; then
     echo "=== Signing nct6687.ko with MOK key ==="
     "/usr/src/kernels/${KVER}/scripts/sign-file" sha256 \
-        /ctx/MOK.priv /ctx/build_files/MOK.der /tmp/nct6687d/nct6687.ko
+        /ctx/MOK.priv /ctx/MOK.der /tmp/nct6687d/nct6687.ko
     modinfo /tmp/nct6687d/nct6687.ko | grep -i sig || true
 else
     echo "=== WARNING: /ctx/MOK.priv not found - module will be UNSIGNED ==="
