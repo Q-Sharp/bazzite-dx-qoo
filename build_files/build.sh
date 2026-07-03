@@ -12,15 +12,10 @@ cp -avf "/ctx/system_files"/. /
 # List of rpmfusion packages can be found here:
 # https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/43/x86_64/repoview/index.html&protocol=https&redirect=1
 
-dnf5 install -y coolercontrol liquidctl tmux
-
-
-# Use a COPR Example:
-#
-# dnf5 -y copr enable ublue-os/staging
-# dnf5 -y install package
-# Disable COPRs so they don't end up enabled on the final image:
-# dnf5 -y copr disable ublue-os/staging
+### Install packages
+dnf5 -y copr enable codifryed/CoolerControl
+dnf5 install -y coolercontrol liquidctl
+dnf5 -y copr disable codifryed/CoolerControl
 
 ### Build nct6687 out-of-tree module (MSI NCT6687D-R fan control)
 KVER="$(rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}')"
