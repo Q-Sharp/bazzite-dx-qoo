@@ -14,7 +14,14 @@ echo "=== Building nct6687 module ==="
 KVER="$(rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}')"
 echo "=== Target kernel: ${KVER} ==="
 
-dnf5 install -y kernel-devel-matched gcc make git
+# Only install build deps that are missing, so exactly those can be removed afterwards
+BUILD_DEPS=()
+for pkg in kernel-devel-matched gcc make git; do
+    rpm -q "${pkg}" > /dev/null || BUILD_DEPS+=("${pkg}")
+done
+if [[ ${#BUILD_DEPS[@]} -gt 0 ]]; then
+    dnf5 install -y "${BUILD_DEPS[@]}"
+fi
 
 # Pinned upstream commit, bumped via Renovate (customManagers in .github/renovate.json5)
 NCT6687D_COMMIT="cd735225a95e04dda3e2befd94ba77e1f7609dcc"
@@ -36,7 +43,9 @@ install -D -m 0644 /tmp/nct6687d/nct6687.ko \
     "/usr/lib/modules/${KVER}/extra/nct6687.ko"
 depmod -a "${KVER}"
 
-dnf5 remove -y kernel-devel-matched
+if [[ ${#BUILD_DEPS[@]} -gt 0 ]]; then
+    dnf5 remove -y "${BUILD_DEPS[@]}"
+fi
 
 rm -rf /tmp/nct6687d
 echo "=== nct6687 build complete ==="
