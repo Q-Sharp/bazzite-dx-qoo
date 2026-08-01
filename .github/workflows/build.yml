@@ -48,6 +48,11 @@ jobs:
         run: |
           just check
 
+      - name: Lint shell scripts
+        shell: bash
+        run: |
+          just lint
+
       - name: Image Name
         id: image-name
         run: |
