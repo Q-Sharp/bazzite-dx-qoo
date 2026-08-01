@@ -2,6 +2,16 @@
 
 This repository is meant to be a template for building your own custom [bootc](https://github.com/bootc-dev/bootc) image. This template is the recommended way to make customizations to any image published by the Universal Blue Project.
 
+## Secure Boot: enrolling the nct6687 signing key
+
+This image ships the nct6687 kernel module (MSI NCT6687D-R fan control) signed with a custom MOK (Machine Owner Key). With Secure Boot enabled, the key must be enrolled once before the module will load:
+
+```bash
+ujust enroll-nct6687-signing-key
+```
+
+This runs `mokutil --import /etc/pki/mok/MOK.der` and asks you to set a one-time password. On the next reboot, MOK Manager will prompt you to enroll the key using that password.
+
 # Community
 
 If you have questions about this template after following the instructions, try the following spaces:

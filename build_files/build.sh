@@ -43,6 +43,9 @@ install -D -m 0644 /tmp/nct6687d/nct6687.ko \
     "/usr/lib/modules/${KVER}/extra/nct6687.ko"
 depmod -a "${KVER}"
 
+# Ship the public MOK so users can enroll it (ujust enroll-nct6687-signing-key)
+install -D -m 0644 /ctx/MOK.der /etc/pki/mok/MOK.der
+
 if [[ ${#BUILD_DEPS[@]} -gt 0 ]]; then
     dnf5 remove -y "${BUILD_DEPS[@]}"
 fi
