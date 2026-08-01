@@ -19,7 +19,7 @@ dnf5 install -y kernel-devel-matched gcc make git
 git clone --depth 1 https://github.com/Fred78290/nct6687d /tmp/nct6687d
 make -C "/usr/src/kernels/${KVER}" M=/tmp/nct6687d modules
 
-if [[ -f /ctx/MOK.priv ]]; then
+if [[ -s /ctx/MOK.priv ]]; then
     echo "=== Signing nct6687.ko with MOK key ==="
     "/usr/src/kernels/${KVER}/scripts/sign-file" sha256 \
         /ctx/MOK.priv /ctx/MOK.der /tmp/nct6687d/nct6687.ko
