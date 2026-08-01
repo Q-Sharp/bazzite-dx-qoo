@@ -16,7 +16,10 @@ echo "=== Target kernel: ${KVER} ==="
 
 dnf5 install -y kernel-devel-matched gcc make git
 
-git clone --depth 1 https://github.com/Fred78290/nct6687d /tmp/nct6687d
+# Pinned upstream commit, bumped via Renovate (customManagers in .github/renovate.json5)
+NCT6687D_COMMIT="cd735225a95e04dda3e2befd94ba77e1f7609dcc"
+git clone https://github.com/Fred78290/nct6687d /tmp/nct6687d
+git -C /tmp/nct6687d checkout --quiet "${NCT6687D_COMMIT}"
 make -C "/usr/src/kernels/${KVER}" M=/tmp/nct6687d modules
 
 if [[ -s /ctx/MOK.priv ]]; then
