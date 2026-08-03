@@ -17,6 +17,12 @@
       "matchDepTypes": ["container"],
       "matchFileNames": [".github/workflows/**.yaml", ".github/workflows/**.yml"],
     },
+    // Keep the base image on the floating :latest tag, never pin it to a digest
+    {
+      "enabled": false,
+      "matchUpdateTypes": ["digest", "pinDigest", "pin"],
+      "matchManagers": ["dockerfile"],
+    },
   ],
 
   // Bump the pinned nct6687d commit in build.sh when upstream master moves

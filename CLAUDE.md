@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Repository Is
 
-A custom [bootc](https://github.com/bootc-dev/bootc) OS image (`bazzite-dx-qoo`) derived from the Universal Blue `image-template`. It builds on top of `ghcr.io/ublue-os/bazzite-dx-nvidia:stable` and adds:
+A custom [bootc](https://github.com/bootc-dev/bootc) OS image (`bazzite-dx-qoo`) derived from the Universal Blue `image-template`. It builds on top of `ghcr.io/ublue-os/bazzite-dx-nvidia:latest` and adds:
 
 - **CoolerControl** (installed from the `codifryed/CoolerControl` COPR, which is enabled only for the install and disabled again)
 - **nct6687 out-of-tree kernel module** (MSI NCT6687D-R fan control), compiled against the image's kernel and signed with a MOK key for Secure Boot
