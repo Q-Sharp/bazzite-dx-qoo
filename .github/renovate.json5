@@ -23,18 +23,5 @@
       "matchUpdateTypes": ["digest", "pinDigest", "pin"],
       "matchManagers": ["dockerfile"],
     },
-  ],
-
-  // Bump the pinned nct6687d commit in build.sh when upstream master moves
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["/^build_files/build\\.sh$/"],
-      "matchStrings": ["NCT6687D_COMMIT=\"?(?<currentDigest>[a-f0-9]{40})\"?"],
-      "depNameTemplate": "Fred78290/nct6687d",
-      "packageNameTemplate": "https://github.com/Fred78290/nct6687d",
-      "currentValueTemplate": "master",
-      "datasourceTemplate": "git-refs",
-    },
   ]
 }
