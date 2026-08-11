@@ -1,0 +1,2 @@
+kargs = ["mem_sleep_default=s2idle"]
+match-architectures = ["x86_64"]

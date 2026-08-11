@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEM=="usb", DEVTYPE=="usb_interface", ATTR{bInterfaceClass}=="03", RUN+="/bin/sh -c 'echo enabled > /sys%p/../power/wakeup'"
