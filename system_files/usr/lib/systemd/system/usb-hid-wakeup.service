@@ -1,0 +1,12 @@
+[Unit]
+Description=Allow USB HID devices to wake the system from suspend
+ConditionPathExists=/sys/bus/usb/devices
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/usb-hid-wakeup.sh
+# No RemainAfterExit: the unit must stay restartable so the udev rule can
+# re-trigger it on every HID hotplug.
+
+[Install]
+WantedBy=multi-user.target

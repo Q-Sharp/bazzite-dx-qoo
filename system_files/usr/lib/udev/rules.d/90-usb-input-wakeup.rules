@@ -1,1 +1,5 @@
-ACTION=="add", SUBSYSTEM=="usb", DEVTYPE=="usb_interface", ATTR{bInterfaceClass}=="03", RUN+="/bin/sh -c 'echo enabled > /sys%p/../power/wakeup'"
+# Re-run the wakeup helper whenever a USB HID device is plugged in. The
+# boot-time pass is done by usb-hid-wakeup.service itself, so this rule only
+# has to cover hotplug. Handing the work to systemd instead of RUN+= keeps it
+# out of the udev worker, where long-running commands get killed on timeout.
+ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_interface", ATTR{bInterfaceClass}=="03", TAG+="systemd", ENV{SYSTEMD_WANTS}+="usb-hid-wakeup.service"

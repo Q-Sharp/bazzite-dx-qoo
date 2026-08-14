@@ -51,3 +51,6 @@ rm -rf /tmp/nct6687d
 echo "=== nct6687 build complete ==="
 
 systemctl enable podman.socket
+
+# Let USB keyboards/mice wake the machine from s2idle
+systemctl enable usb-hid-wakeup.service
