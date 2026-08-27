@@ -97,6 +97,7 @@ jobs:
       # You can delete the Rechunk with rpm-ostree portion then if you use this
       - name: Rechunk with Chunkah
         id: rechunk
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: |
          sudo -E $(command -v just) rechunk \
            ${IMAGE_NAME} \
