@@ -55,5 +55,7 @@ systemctl enable podman.socket
 # Let USB keyboards/mice wake the machine from s2idle
 systemctl enable usb-hid-wakeup.service
 
+systemctl disable cardwired.service
+
 ### Verify final image and contents are correct.
 bootc container lint
