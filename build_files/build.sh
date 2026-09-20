@@ -52,7 +52,5 @@ echo "=== nct6687 build complete ==="
 
 systemctl enable podman.socket
 
-systemctl disable cardwired.service
-
 ### Verify final image and contents are correct.
 bootc container lint
