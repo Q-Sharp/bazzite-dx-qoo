@@ -6,10 +6,12 @@ set -ouex pipefail
 # (https://github.com/NVIDIA/open-gpu-kernel-modules/issues/1405).
 #
 # Rebuilds the NVIDIA kernel modules from the same sources as the stock Bazzite
-# kmod plus the fixes in nvidia-patches/, signs them with the MOK key, replaces
-# the stock modules and rebuilds the initramfs. Any other driver version keeps
-# the stock modules, so this turns itself off as soon as Bazzite ships a
-# different driver.
+# kmod plus the fixes in nvidia-patches/, signs them with the MOK key and
+# replaces the stock modules. Any other driver version keeps the stock modules,
+# so this turns itself off as soon as Bazzite ships a different driver.
+#
+# The initramfs carries its own copy of the modules; build.sh rebuilds it
+# afterwards.
 #
 # Usage: nvidia-dp-fix.sh <kernel version>
 # Expects kernel-devel-matched, gcc, gcc-c++, make and git to be installed.
@@ -79,16 +81,6 @@ for stock in "${MODDIR}"/*.ko.xz; do
     fi
 done
 depmod -a "${KVER}"
-
-# The initramfs carries its own copy of the NVIDIA modules and loads them first
-# (force_drivers in dracut.conf.d/99-nvidia.conf), so rebuild it the way
-# bazzite-dx does. /root points to /var/roothome, which dracut only picks up
-# if it exists during the build.
-mkdir -p /var/roothome
-dracut --no-hostonly --kver "${KVER}" --reproducible --zstd --add ostree \
-    -f "/usr/lib/modules/${KVER}/initramfs.img"
-chmod 0600 "/usr/lib/modules/${KVER}/initramfs.img"
-rmdir --ignore-fail-on-non-empty /var/roothome
 
 rm -rf "${SRC}"
 echo "=== NVIDIA rebuild complete ==="

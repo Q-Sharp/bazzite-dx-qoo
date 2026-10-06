@@ -46,12 +46,33 @@ install -D -m 0644 /ctx/MOK.der /etc/pki/mok/MOK.der
 ### Rebuild the NVIDIA modules with the DisplayPort fix (affected driver version only)
 /ctx/nvidia-dp-fix.sh "${KVER}"
 
+### Turn off the cgroup-based VRAM accounting added in NVIDIA driver 615
+# With Bazzite's dmemcg-booster running, driver 615 reports only about 4 GB of
+# VRAM to games. RmMemacctMode=0 disables the accounting; older drivers ignore
+# the key. NVreg_RegistryDwords is one string and the last "options" line wins,
+# so carry over whatever the base image already sets.
+NV_DWORDS="$(sed -n 's/^options nvidia .*NVreg_RegistryDwords="\{0,1\}\([^" ]*\).*/\1/p' \
+    /usr/lib/modprobe.d/*.conf | tail -n 1)"
+echo "options nvidia NVreg_RegistryDwords=\"${NV_DWORDS:+${NV_DWORDS};}RmMemacctMode=0\"" \
+    > /usr/lib/modprobe.d/zz-nvidia-memacct.conf
+
 if [[ ${#BUILD_DEPS[@]} -gt 0 ]]; then
     dnf5 remove -y "${BUILD_DEPS[@]}"
 fi
 
 rm -rf /tmp/nct6687d
 echo "=== nct6687 build complete ==="
+
+### Rebuild the initramfs
+# It carries its own copy of the NVIDIA modules and of modprobe.d and loads the
+# modules from there (force_drivers in dracut.conf.d/99-nvidia.conf), so changes
+# to either only take effect after a rebuild. Same dracut call as bazzite-dx.
+# /root points to /var/roothome, which dracut only picks up if it exists.
+mkdir -p /var/roothome
+dracut --no-hostonly --kver "${KVER}" --reproducible --zstd --add ostree \
+    -f "/usr/lib/modules/${KVER}/initramfs.img"
+chmod 0600 "/usr/lib/modules/${KVER}/initramfs.img"
+rmdir --ignore-fail-on-non-empty /var/roothome
 
 systemctl enable podman.socket
 
