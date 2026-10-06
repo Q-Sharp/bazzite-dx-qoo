@@ -12,6 +12,8 @@ ujust enroll-nct6687-signing-key
 
 This runs `mokutil --import /etc/pki/mok/MOK.der` and asks you to set a one-time password. On the next reboot, MOK Manager will prompt you to enroll the key using that password.
 
+While the base image ships NVIDIA 615.71.09, the same key also signs the NVIDIA kernel modules, which are rebuilt with a DisplayPort fix (see `build_files/nvidia-dp-fix.sh`). Enroll the key **before** switching to this image: without it, Secure Boot rejects the NVIDIA modules and there is no display.
+
 # Community
 
 If you have questions about this template after following the instructions, try the following spaces:
