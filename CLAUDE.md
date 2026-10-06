@@ -8,6 +8,7 @@ A custom [bootc](https://github.com/bootc-dev/bootc) OS image (`bazzite-dx-qoo`)
 
 - **CoolerControl** (installed from the `codifryed/CoolerControl` COPR, which is enabled only for the install and disabled again)
 - **nct6687 out-of-tree kernel module** (MSI NCT6687D-R fan control), compiled against the image's kernel and signed with a MOK key for Secure Boot
+- **NVIDIA DisplayPort fix** (temporary): while the base image ships NVIDIA 615.71.09, the NVIDIA kernel modules are rebuilt with the fix from [open-gpu-kernel-modules#1406](https://github.com/NVIDIA/open-gpu-kernel-modules/pull/1406) (monitors staying black after DPMS wake) and signed with the same MOK key
 
 The result is published to GHCR by CI; end users consume it via `sudo bootc switch ghcr.io/q-sharp/bazzite-dx-qoo`.
 
@@ -16,7 +17,8 @@ The result is published to GHCR by CI; end users consume it via `sudo bootc swit
 The build is a single pipeline: `Containerfile` → `build_files/build.sh` → `bootc container lint`.
 
 - **`Containerfile`**: bind-mounts `build_files/` and `system_files/` as `/ctx` from a scratch stage (they are never copied into the final image) and runs `/ctx/build.sh`.
-- **`build_files/build.sh`**: the place to install packages or make image modifications. It first copies `system_files/` onto `/`, then installs packages, then builds the kernel module. The module build queries the image's kernel version via `rpm -q kernel`, installs whichever build deps are missing (`kernel-devel-matched`, `gcc`, `make`, `git`), clones nct6687d from upstream master, compiles, signs with `/ctx/MOK.priv` + `/ctx/MOK.der`, installs to `/usr/lib/modules/<kver>/extra/`, runs `depmod`, ships `MOK.der` to `/etc/pki/mok/MOK.der`, and removes exactly the build deps it installed.
+- **`build_files/build.sh`**: the place to install packages or make image modifications. It first copies `system_files/` onto `/`, then installs packages, then builds the kernel module. The module build queries the image's kernel version via `rpm -q kernel`, installs whichever build deps are missing (`kernel-devel-matched`, `gcc`, `gcc-c++`, `make`, `git`), clones nct6687d from upstream master, compiles, signs with `/ctx/MOK.priv` + `/ctx/MOK.der`, installs to `/usr/lib/modules/<kver>/extra/`, runs `depmod`, ships `MOK.der` to `/etc/pki/mok/MOK.der`, calls `nvidia-dp-fix.sh`, and removes exactly the build deps it installed.
+- **`build_files/nvidia-dp-fix.sh`**: called by `build.sh` with the kernel version. Does nothing unless the stock NVIDIA module reports version 615.71.09 and `/ctx/MOK.priv` exists. Otherwise it clones NVIDIA's `open-gpu-kernel-modules` at that tag, applies the patches the stock Bazzite kmod is built with (negativo17 `nvidia-kmod.spec` and `ublue-os/akmods` `patches/ogc`, fetched from commit-pinned URLs), then every patch in `build_files/nvidia-patches/`, builds all modules, replaces the stock `extra/nvidia/*.ko.xz` with stripped, MOK-signed, xz-compressed builds, and rebuilds the initramfs with the same dracut call as bazzite-dx (the initramfs contains the NVIDIA modules and loads them before the root filesystem is mounted).
 - **`system_files/`**: overlay copied verbatim onto the image root (`usr/lib/modules-load.d/nct6687.conf` loads the module at boot; `usr/lib/modprobe.d/nct6687.conf` sets `force=true`; `usr/share/ublue-os/just/60-custom.just` adds the `ujust enroll-nct6687-signing-key` recipe via bazzite's optional import hook).
 - **`image-template.env`**: image parameters (`IMAGE_NAME`, `REPO_ORGANIZATION`, `BIB_IMAGE`, …) loaded by the Justfile via dotenv. Change names/metadata here, not in the Justfile.
 
@@ -55,4 +57,6 @@ sudo bootc switch --transport containers-storage localhost/bazzite-dx-qoo:latest
 
 - `build.sh` runs with `set -ouex pipefail`, so any failing command aborts the whole image build — guard genuinely optional steps with `|| true` (as done for `modinfo`).
 - `just check` runs `just --fmt --check` on every `*.just` file in the repo, including `system_files/usr/share/ublue-os/just/60-custom.just` — new ujust recipes must be fmt-clean or CI fails.
+- `nvidia-dp-fix.sh` replaces the NVIDIA modules with MOK-signed ones. A machine without the MOK enrolled gets no display under Secure Boot; a build without `MOK.priv` (local builds, fork PRs) keeps the stock modules and therefore the DisplayPort bug.
+- The stock patch list in `nvidia-dp-fix.sh` is a snapshot of what negativo17 and ublue-os/akmods applied to 615.71.09 on 2026-10-06; patches they add later for the same driver version are not picked up. Delete the script, `nvidia-patches/`, its call in `build.sh` and `gcc-c++` from the dep list once Bazzite ships a driver with the fix.
 - The kickstart in `disk_config/iso.toml` hardcodes the published image URL (`ghcr.io/q-sharp/bazzite-dx-qoo:latest`) — update it if the image name or organization changes.

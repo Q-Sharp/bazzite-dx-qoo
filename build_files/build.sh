@@ -16,7 +16,7 @@ echo "=== Target kernel: ${KVER} ==="
 
 # Only install build deps that are missing, so exactly those can be removed afterwards
 BUILD_DEPS=()
-for pkg in kernel-devel-matched gcc make git; do
+for pkg in kernel-devel-matched gcc gcc-c++ make git; do
     rpm -q "${pkg}" > /dev/null || BUILD_DEPS+=("${pkg}")
 done
 if [[ ${#BUILD_DEPS[@]} -gt 0 ]]; then
@@ -42,6 +42,9 @@ depmod -a "${KVER}"
 
 # Ship the public MOK so users can enroll it (ujust enroll-nct6687-signing-key)
 install -D -m 0644 /ctx/MOK.der /etc/pki/mok/MOK.der
+
+### Rebuild the NVIDIA modules with the DisplayPort fix (affected driver version only)
+/ctx/nvidia-dp-fix.sh "${KVER}"
 
 if [[ ${#BUILD_DEPS[@]} -gt 0 ]]; then
     dnf5 remove -y "${BUILD_DEPS[@]}"
