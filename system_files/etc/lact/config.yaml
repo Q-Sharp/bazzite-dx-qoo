@@ -1,0 +1,29 @@
+version: 7
+daemon:
+  log_level: info
+  admin_user: qoo
+  admin_group: wheel
+  disable_clocks_cleanup: false
+apply_settings_timer: 5
+gpus:
+  10DE:2C05-1043:89F6-0000:01:00.0:
+    fan_control_enabled: false
+    fan_control_settings:
+      mode: static
+      static_speed: 1.0
+      temperature_key: edge
+      interval_ms: 500
+      curve:
+        40: 0.3
+        50: 0.35
+        60: 0.5
+        70: 0.75
+        80: 1.0
+    power_mizer_mode: PreferMaximumPerformance
+    power_cap: 350.0
+    gpu_clock_offsets:
+      0: 120
+    mem_clock_offsets:
+      0: 6000
+current_profile: null
+auto_switch_profiles: false
