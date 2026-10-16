@@ -1,0 +1,536 @@
+# This is the CoolerControl configuration file.
+# Comments and most formatting is preserved.
+# Most of this file you can edit by hand, but it is recommended to stop the daemon when doing so.
+# -------------------------------
+
+
+# Unique ID Device List
+# -------------------------------
+# This is a simple UID and device name key-value pair, that is automatically generated at startup
+#  to help humans distinguish which UID belongs to which device in this config file.
+#  Only the device name is given here, complete Device information can be requested from the API.
+#  UIDs are generated sha256 hashes based on specific criteria to help determine device uniqueness.
+# ANY CHANGES WILL BE OVERWRITTEN.
+# Example:
+# 21091c4fb341ceab6236e8c9e905ccc263a4ac08134b036ed415925ba4c1645d = "Nvidia GPU"
+[devices]
+4a169e22904f320bb49266d9a74efe6cc62f20f1433feaef83512ce3a03186ca = "nvme1"
+98032eae93a8c4f794415e5fc369278427c39433fdbf630b79f7bbcd237af141 = "nvme0"
+4f7cd9aa7e0b4a2d31517cad6f7411fa03229d8af8f0b124abc2ea76e3a99f36 = "spd5118"
+41715bbc274694dac4ce9dc6f0eac93118fc39b65a6cd50a3a42f77227d548c4 = "nvme2"
+3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127 = "AMD Ryzen 7 9800X3D 8-Core Processor"
+19e098e312e1b1b39163a343ea22b6ea17f18ec1a803ffe0ce44f5bacd6076ee = "Custom Sensors"
+146edea07f9040b9abb422d8e7e84b99a2f03820f2b1e0729f5e3393a80b95d2 = "NVIDIA GeForce RTX 5070 Ti"
+c804a53f5a6511a708942e764e5af9850f054fd878ba47b339aa2682fb241687 = "spd5118"
+3f0f3ab59935b39b0048775f2f018009527607bf854d2947964e396f0f1c14c4 = "r8169_0_900:00"
+5df2793fceb3055f361276d8628197e30d53f6b15b90fe00e47b0a1d696cfada = "Samsung SSD 860"
+1695cae408784336517ec0c3337deba49a7ff0414497c6fba568d85b56141f55 = "Samsung SSD 870"
+547e218aec19fccc2143f5aa7c88f8cfb54615dc66b9c91797f64a0b9ed3629c = "nct6687"
+7bfee7e15e0af819a1c74ac2f088d69197bdae5f361d2af4da2960c931be3cc7 = "nct6687"
+205652e33137fd4b0a3222c51f8717368d69f9bed490b6d5ffbd56a66bcbf3ff = "ath12k_hwmon"
+1b929f70e9f5e493061e1402e7805a7ae104b92272b8bf156e6d1b0924904e6c = "r8169_0_800:00"
+
+
+# Legacy690 Option for devices
+# -------------------------------
+# There are 2 Asetek 690LC liquid coolers that have the same device ID.
+#  To tell them apart we need user input to know which cooler we're actually dealing with.
+#  This is an assignment of liquidctl AseTek690LC device UIDs to true/false:
+#   true = Legacy690 Cooler aka NZXT Kraken X40, X60, X31, X41, X51 and X61
+#   false = Modern690 Cooler aka EVGA CLC 120 (CLC12), 240, 280 and 360
+# Example:
+# 21091c4fb341ceab6236e8c9e905ccc263a4ac08134b036ed415925ba4c1645d = true
+[legacy690]
+
+
+# Device Settings
+# -------------------------------
+# This is where CoolerControl will save device settings for the cooresponding device.
+# Settings can be set here also specifically by hand. (restart required for applying)
+# These settings are applied on startup and each is overwritten once a new setting
+# has been applied.
+# Example:
+# [device-settings.4b9cd1bc5fb2921253e6b7dd5b1b011086ea529d915a86b3560c236084452807]
+# pump = { speed_fixed = 30 }
+# logo = { lighting = { mode = "fixed", colors = [[0, 255, 255]] } }
+# ring = { lighting = { mode = "spectrum-wave", backward = true, colors = [] } }
+[device-settings]
+
+[device-settings.7bfee7e15e0af819a1c74ac2f088d69197bdae5f361d2af4da2960c931be3cc7]
+fan1 = { profile_uid = "8873f0c2-88d3-45c8-b191-3803498b2d55" }
+fan4 = { profile_uid = "0e5e065a-623d-4579-89c5-15978f142288" }
+fan5 = { profile_uid = "67677060-4b0e-445b-b6d8-d2a06cb0eaaa" }
+fan8 = { profile_uid = "de4085fe-fbcc-4f5f-b8be-9251d02c206e" }
+fan6 = { profile_uid = "2a2e495b-fdc7-4b5d-860f-4cee827b974b" }
+fan7 = { profile_uid = "013793c3-f405-483c-8851-950db87aa9d0" }
+fan2 = { profile_uid = "0" }
+fan3 = { profile_uid = "0" }
+
+[device-settings.146edea07f9040b9abb422d8e7e84b99a2f03820f2b1e0729f5e3393a80b95d2]
+fan1 = { profile_uid = "0" }
+fan2 = { profile_uid = "0" }
+
+
+# A list of profiles to be used with each device's settings
+# -------------------------------
+[[profiles]]
+uid = "0"
+name = "Unmanaged"
+p_type = "Default"
+function = "0"
+
+[[profiles]]
+uid = "1c6c9305-235b-4c6e-9162-48f52a87d1da"
+name = "Alltag: Gehaeuse GPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 0], [60.0, 0], [66.0, 22], [72.0, 36], [78.0, 52], [84.0, 70], [90.0, 88]]
+temp_source = { temp_name = "GPU Temp", device_uid = "146edea07f9040b9abb422d8e7e84b99a2f03820f2b1e0729f5e3393a80b95d2" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "48b9a760-b95a-4d61-9599-feb076d56396"
+name = "Alltag: Radiator CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 0], [62.0, 0], [68.0, 12], [74.0, 25], [80.0, 40], [85.0, 58], [90.0, 80], [95.0, 100]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "497f2116-23ad-413b-bb81-a55a13bf5027"
+name = "Alltag: Radiator GPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 0], [60.0, 0], [66.0, 12], [72.0, 25], [78.0, 40], [84.0, 60], [90.0, 80]]
+temp_source = { temp_name = "GPU Temp", device_uid = "146edea07f9040b9abb422d8e7e84b99a2f03820f2b1e0729f5e3393a80b95d2" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "8873f0c2-88d3-45c8-b191-3803498b2d55"
+name = "Alltag: Radiator"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["48b9a760-b95a-4d61-9599-feb076d56396", "497f2116-23ad-413b-bb81-a55a13bf5027"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "7436657e-b5e0-4feb-bc90-aa6e312666f2"
+name = "Alltag: Back Top CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 8], [64.0, 8], [72.0, 18], [80.0, 28], [88.0, 43], [95.0, 58]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "0e5e065a-623d-4579-89c5-15978f142288"
+name = "Alltag: Back Top"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["7436657e-b5e0-4feb-bc90-aa6e312666f2", "1c6c9305-235b-4c6e-9162-48f52a87d1da"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "5a6a1d56-9db3-4831-af74-1037460646d0"
+name = "Alltag: Front Top CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 8], [64.0, 8], [72.0, 18], [80.0, 28], [88.0, 43], [95.0, 58]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "67677060-4b0e-445b-b6d8-d2a06cb0eaaa"
+name = "Alltag: Front Top"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["5a6a1d56-9db3-4831-af74-1037460646d0", "1c6c9305-235b-4c6e-9162-48f52a87d1da"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "f5a45535-a0d6-4139-870e-5232b12ae9fa"
+name = "Alltag: Bottom Front CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 8], [64.0, 8], [72.0, 18], [80.0, 28], [88.0, 43], [95.0, 58]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "2a2e495b-fdc7-4b5d-860f-4cee827b974b"
+name = "Alltag: Bottom Front"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["f5a45535-a0d6-4139-870e-5232b12ae9fa", "1c6c9305-235b-4c6e-9162-48f52a87d1da"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "2164bd9e-8516-450e-987b-e83e5e4ba928"
+name = "Alltag: Bottom Back CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 14], [64.0, 14], [72.0, 24], [80.0, 34], [88.0, 49], [95.0, 64]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "013793c3-f405-483c-8851-950db87aa9d0"
+name = "Alltag: Bottom Back"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["2164bd9e-8516-450e-987b-e83e5e4ba928", "1c6c9305-235b-4c6e-9162-48f52a87d1da"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "4c786246-3455-4fe8-be6c-d6a8e37f8887"
+name = "Alltag: Front Bottom CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 10], [64.0, 10], [72.0, 20], [80.0, 30], [88.0, 45], [95.0, 60]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "de4085fe-fbcc-4f5f-b8be-9251d02c206e"
+name = "Alltag: Front Bottom"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["4c786246-3455-4fe8-be6c-d6a8e37f8887", "1c6c9305-235b-4c6e-9162-48f52a87d1da"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "0236ea53-5596-4c5a-a727-c0700b988309"
+name = "Ultra: Gehaeuse GPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 0], [45.0, 0], [52.0, 35], [58.0, 50], [64.0, 65], [70.0, 82], [76.0, 100]]
+temp_source = { temp_name = "GPU Temp", device_uid = "146edea07f9040b9abb422d8e7e84b99a2f03820f2b1e0729f5e3393a80b95d2" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "6af3e296-cb98-4ccc-8a43-386c2c7996fa"
+name = "Ultra: Radiator CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 0], [45.0, 0], [52.0, 18], [58.0, 32], [64.0, 48], [70.0, 65], [78.0, 82], [85.0, 100]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "350df8b5-8351-4854-8ba1-99f54efb4d1a"
+name = "Ultra: Radiator GPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 0], [45.0, 0], [52.0, 20], [58.0, 35], [64.0, 52], [70.0, 72], [76.0, 92]]
+temp_source = { temp_name = "GPU Temp", device_uid = "146edea07f9040b9abb422d8e7e84b99a2f03820f2b1e0729f5e3393a80b95d2" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "5d476c7d-f45a-4acd-9a96-c42636b20484"
+name = "Ultra: Radiator"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["6af3e296-cb98-4ccc-8a43-386c2c7996fa", "350df8b5-8351-4854-8ba1-99f54efb4d1a"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "2b378b18-9099-4652-9d24-5c7def1fccdf"
+name = "Ultra: Back Top CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 23], [45.0, 23], [52.0, 41], [60.0, 58], [68.0, 75], [76.0, 95], [85.0, 100]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "653f128e-1564-46a4-a964-ac4980a38839"
+name = "Ultra: Back Top"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["2b378b18-9099-4652-9d24-5c7def1fccdf", "0236ea53-5596-4c5a-a727-c0700b988309"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "51941230-d3b3-4202-8c37-99f662e82027"
+name = "Ultra: Front Top CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 23], [45.0, 23], [52.0, 41], [60.0, 58], [68.0, 75], [76.0, 95], [85.0, 100]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "9f70c939-5052-47b5-bcd3-a27bcb22bbd2"
+name = "Ultra: Front Top"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["51941230-d3b3-4202-8c37-99f662e82027", "0236ea53-5596-4c5a-a727-c0700b988309"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "2c42de09-64f2-402b-ad42-75c1dc61966d"
+name = "Ultra: Bottom Front CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 23], [45.0, 23], [52.0, 41], [60.0, 58], [68.0, 75], [76.0, 95], [85.0, 100]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "ef2ca2b9-825a-4a25-b6ba-4b432cc31cd6"
+name = "Ultra: Bottom Front"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["2c42de09-64f2-402b-ad42-75c1dc61966d", "0236ea53-5596-4c5a-a727-c0700b988309"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "67569612-a279-420c-8695-c83800718a38"
+name = "Ultra: Bottom Back CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 29], [45.0, 29], [52.0, 47], [60.0, 64], [68.0, 81], [76.0, 100], [85.0, 100]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "e103e557-bdc9-41e7-9895-320446f843c8"
+name = "Ultra: Bottom Back"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["67569612-a279-420c-8695-c83800718a38", "0236ea53-5596-4c5a-a727-c0700b988309"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "2b86535e-cbe0-4472-aaef-9b557d9d694b"
+name = "Ultra: Front Bottom CPU"
+p_type = "Graph"
+function_uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+speed_profile = [[20.0, 25], [45.0, 25], [52.0, 43], [60.0, 60], [68.0, 77], [76.0, 97], [85.0, 100]]
+temp_source = { temp_name = "temp1", device_uid = "3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127" }
+temp_min = 20.0
+temp_max = 100.0
+
+[[profiles]]
+uid = "018160c4-71c7-4b6e-8b1f-7549a402a61f"
+name = "Ultra: Front Bottom"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["2b86535e-cbe0-4472-aaef-9b557d9d694b", "0236ea53-5596-4c5a-a727-c0700b988309"]
+mix_function_type = "Max"
+
+# A list of functions to be applied to the various profiles
+# -------------------------------
+[[functions]]
+uid = "0"
+name = "Default Function"
+f_type = "Identity"
+
+[[functions]]
+uid = "197d77fe-6d42-46bc-854b-7ecaac0be49b"
+name = "Sanft (traege)"
+f_type = "Standard"
+duty_minimum = 1
+duty_maximum = 100
+step_size_min_decreasing = 0
+step_size_max_decreasing = 0
+response_delay = 3
+deviance = 2.0
+only_downward = false
+threshold_hopping = true
+bypass_min_at_extremes = true
+
+
+# Cooler Control Settings
+# -------------------------------
+# This is where CoolerControl specifc general and specifc device settings are set. These device
+# settings differ from the above Device Settings, in that they are applied to CoolerControl,
+# and not on the devices themselves. For ex. settings such as disabling/enabling a particular device.
+[settings]
+
+# whether to apply the saved device settings on daemon startup
+apply_on_boot = true
+
+# Whether to enable the integration with liquidctl.
+# Disabling this will prevent any communication with liquidctl,
+# and all HWMon supported devices will be shown.
+liquidctl_integration = true
+
+# There are some devices that are supported both by liquidctl and hwmon drivers. Normally the
+# preference is to use liquidctl as it supports more features such as RGB control. There are
+# some cases where the hwmon driver is preferred though. Note: Care should be taken to blacklist
+# one of the devices to avoid needlessly loading the device IO and avoid concurrency issues.
+# Use at your own risk.
+hide_duplicate_devices = true
+
+# Will skip initialization calls for liquidctl devices. ONLY USE if you are doing initialiation manually.
+no_init = false
+
+# Startup Delay (seconds) is an integer value between 0 and 10
+startup_delay = 2
+
+# For ThinkPads, wheather to use the 'full-speed' option when settings the fan to 100%
+# This option drives the fan as fast as it can go, which might exceed hardware limits,
+# so use this level with caution.
+thinkpad_full_speed = false
+
+# API Address and Port:
+# The daemon by default uses port 11987 and the standard loopback IPv4 and IPv6 addresses.
+# You can set an IPv4, IPv6 or both addresses to listen on. An empty string will disable the address.
+# It is highly recommended to use the default settings unless you have a specific reason to change them
+# and understand the implications.
+# If you expose the API to a public network, it is recommended to use TLS/HTTPS (see below).
+# For more information see the project wiki.
+# Example:
+# port = 11987
+# ipv4_address = "127.0.0.1"
+# ipv6_address = "::1"
+
+# Whether to compress the response payload from the API. This will reduce the size of the response
+# but will increase CPU usage a tiny bit. This is useful if you are running the API over a network.
+# 'compress' is deprecated, use compress_payload instead.
+compress_payload = true
+
+# The polling rate for sensor data collection. The default is 1.0 second. Limited to values
+# between 0.5 and 5.0 seconds in half-second increments.
+# Note: Caution should be used when using values less than 1.0.
+# poll_rate = 1.0
+
+# Whether to check if drivetemp supported drives are in a suspended state/spun down, and if so,
+# return 0C as their reporting temperature.
+drivetemp_suspend = true
+poll_rate = 1.0
+tls_enabled = true
+allow_unencrypted = false
+sensors_auto_detect = true
+device_listener_enabled = true
+disabled_plugins = ["custom-device"]
+
+[settings.3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127]
+name = "AMD Ryzen 7 9800X3D 8-Core Processor"
+disable = false
+
+[settings.3145e1a42801faf9cf948df8c705afb4859f084c10a7e7c5e4efecb1e0167127.channel_settings]
+
+[settings.146edea07f9040b9abb422d8e7e84b99a2f03820f2b1e0729f5e3393a80b95d2]
+name = "NVIDIA GeForce RTX 5070 Ti"
+disable = false
+
+[settings.146edea07f9040b9abb422d8e7e84b99a2f03820f2b1e0729f5e3393a80b95d2.channel_settings]
+
+[settings.7bfee7e15e0af819a1c74ac2f088d69197bdae5f361d2af4da2960c931be3cc7]
+name = "nct6687"
+disable = false
+
+[settings.7bfee7e15e0af819a1c74ac2f088d69197bdae5f361d2af4da2960c931be3cc7.channel_settings]
+fan7 = { label = "System Fan #5", disabled = false }
+fan2 = { label = "Pump Fan", disabled = false }
+fan6 = { label = "System Fan #4", disabled = false }
+temp6 = { label = "Pc Ie X1", disabled = false }
+temp5 = { label = "Cpu Socket", disabled = false }
+fan3 = { label = "System Fan #1", disabled = false }
+temp7 = { label = "M2 1", disabled = false }
+
+[settings.98032eae93a8c4f794415e5fc369278427c39433fdbf630b79f7bbcd237af141]
+name = "Samsung SSD 990 PRO 4TB"
+disable = false
+
+[settings.98032eae93a8c4f794415e5fc369278427c39433fdbf630b79f7bbcd237af141.channel_settings]
+
+[settings.4a169e22904f320bb49266d9a74efe6cc62f20f1433feaef83512ce3a03186ca]
+name = "Samsung SSD 970 EVO 1TB"
+disable = false
+
+[settings.4a169e22904f320bb49266d9a74efe6cc62f20f1433feaef83512ce3a03186ca.channel_settings]
+
+[settings.41715bbc274694dac4ce9dc6f0eac93118fc39b65a6cd50a3a42f77227d548c4]
+name = "Samsung SSD 990 EVO Plus 2TB"
+disable = false
+
+[settings.41715bbc274694dac4ce9dc6f0eac93118fc39b65a6cd50a3a42f77227d548c4.channel_settings]
+
+[settings.3f0f3ab59935b39b0048775f2f018009527607bf854d2947964e396f0f1c14c4]
+name = "r8169_0_900:00"
+disable = false
+
+[settings.3f0f3ab59935b39b0048775f2f018009527607bf854d2947964e396f0f1c14c4.channel_settings]
+
+[settings.4f7cd9aa7e0b4a2d31517cad6f7411fa03229d8af8f0b124abc2ea76e3a99f36]
+name = "spd5118"
+disable = false
+
+[settings.4f7cd9aa7e0b4a2d31517cad6f7411fa03229d8af8f0b124abc2ea76e3a99f36.channel_settings]
+
+[settings.c804a53f5a6511a708942e764e5af9850f054fd878ba47b339aa2682fb241687]
+name = "spd5118"
+disable = false
+
+[settings.c804a53f5a6511a708942e764e5af9850f054fd878ba47b339aa2682fb241687.channel_settings]
+
+[settings.205652e33137fd4b0a3222c51f8717368d69f9bed490b6d5ffbd56a66bcbf3ff]
+name = "ath12k_hwmon"
+disable = false
+
+[settings.205652e33137fd4b0a3222c51f8717368d69f9bed490b6d5ffbd56a66bcbf3ff.channel_settings]
+
+[power_profile_modes]
+balanced = "036ff90f-030b-4247-a709-8fd24a174a13"
+power-saver = "036ff90f-030b-4247-a709-8fd24a174a13"
+performance = "58472743-a006-430c-9f3e-ce40a57416da"
+
+# TLS/HTTPS Configuration:
+# TLS to secure the REST API with HTTPS. (enabled by default)
+# When enabled, a self-signed certificate will be automatically generated on first startup if no
+# certificate paths are specified. The certificate and key are stored in /etc/coolercontrol/ by
+# default.
+# Note: Self-signed certificates will cause browser warnings. You can provide your own
+# certificate by specifying the paths below, or use a reverse proxy (nginx, caddy, traefik)
+# to handle TLS termination as an alternative approach.
+# tls_enabled = true
+# tls_cert_path = "/etc/coolercontrol/coolercontrol.crt"
+# tls_key_path = "/etc/coolercontrol/coolercontrol.key"
+
+# Reverse Proxy / CORS Configuration:
+# Custom origins to allow in CORS requests. This is useful when accessing CoolerControl through
+# a reverse proxy with a custom domain, or via port forwarding with a public IP. Add the full
+# origin URL (scheme + host + port if non-standard).
+# origins = ["https://coolercontrol.mydomain.com", "http://192.168.1.1:8080"]
+
+# Header to check for the client's original protocol when behind a reverse proxy. Common values
+# are "X-Forwarded-Proto" (nginx, Apache) or "X-Scheme". When this header indicates "https",
+# the HTTP-to-HTTPS redirect is skipped (the proxy handles TLS termination).
+# protocol_header = "X-Forwarded-Proto"
+
+# Allow unencrypted HTTP connections from non-localhost addresses. By default, non-localhost
+# HTTP requests are redirected to HTTPS when TLS is enabled. Set this to true to allow HTTP.
+# Note: This should only be used as a last resort and is not recommended.
+# allow_unencrypted = false
+
+# Whether to auto-detect Super-I/O hardware sensors and load the appropriate kernel
+# modules at startup. This helps ensure all hwmon chips are available. (x86_64 only)
+# sensors_auto_detect = true
+
+# Whether to listen for kernel device add/remove events (e.g. USB hotplug) at startup.
+# When enabled, the daemon watches for hardware changes and notifies connected clients.
+# Disable this in containers or environments without netlink socket access.
+# device_listener_enabled = true
+
+# CoolerControl Device settings Example:
+# [settings.4b9cd1bc5fb2921253e6b7dd5b1b011086ea529d915a86b3560c236084452807]
+# disabled = true

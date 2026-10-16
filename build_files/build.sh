@@ -75,6 +75,7 @@ chmod 0600 "/usr/lib/modules/${KVER}/initramfs.img"
 rmdir --ignore-fail-on-non-empty /var/roothome
 
 systemctl enable podman.socket
+systemctl enable coolercontrold.service lactd.service
 
 ### Verify final image and contents are correct.
 bootc container lint

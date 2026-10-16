@@ -1,0 +1,22 @@
+# CoolerControl display-name overrides.
+# Managed by coolercontrold: comments are not preserved on rewrite.
+# Hand edits are applied at the next daemon startup.
+
+[devices.146edea07f9040b9abb422d8e7e84b99a2f03820f2b1e0729f5e3393a80b95d2]
+device_name = "NVIDIA GeForce RTX 5070 Ti"
+
+[devices.146edea07f9040b9abb422d8e7e84b99a2f03820f2b1e0729f5e3393a80b95d2.channels]
+fan1 = { channel_label = "fan1", label = "Inner GPU Fan" }
+fan2 = { channel_label = "fan2", label = "Outer Double GPU Fans" }
+
+[devices.7bfee7e15e0af819a1c74ac2f088d69197bdae5f361d2af4da2960c931be3cc7]
+device_name = "nct6687"
+
+[devices.7bfee7e15e0af819a1c74ac2f088d69197bdae5f361d2af4da2960c931be3cc7.channels]
+fan1 = { channel_label = "CPU Fan", label = "CPU Radiot / 3 Out Fans" }
+fan2 = { channel_label = "Pump Fan", label = "Pump Fan" }
+fan4 = { channel_label = "System Fan #2", label = "Back Top Out Fan" }
+fan5 = { channel_label = "System Fan #3", label = "Front Top In Fan" }
+fan6 = { channel_label = "System Fan #4", label = "Bottom Front In Fan" }
+fan7 = { channel_label = "System Fan #5", label = "Bottom Back In Fan" }
+fan8 = { channel_label = "System Fan #6", label = "Front Bottom In Fan" }
