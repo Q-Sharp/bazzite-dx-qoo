@@ -9,6 +9,11 @@ dnf5 -y copr enable codifryed/CoolerControl
 dnf5 install -y coolercontrold coolercontrol-liqctld coolercontrol liquidctl
 dnf5 -y copr disable codifryed/CoolerControl
 
+# tmux for claude-away (Claude Code that keeps running unattended); no-op if
+# the base image already has it
+dnf5 install -y tmux
+chmod 0755 /usr/bin/claude-away
+
 ### Build nct6687 out-of-tree module (MSI NCT6687D-R fan control)
 echo "=== Building nct6687 module ==="
 KVER="$(rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}')"

@@ -14,6 +14,21 @@ This runs `mokutil --import /etc/pki/mok/MOK.der` and asks you to set a one-time
 
 While the base image ships NVIDIA 615.71.09, the same key also signs the NVIDIA kernel modules, which are rebuilt with a DisplayPort fix (see `build_files/nvidia-dp-fix.sh`). Enroll the key **before** switching to this image: without it, Secure Boot rejects the NVIDIA modules and there is no display.
 
+## Claude Code that keeps running: `claude-away`
+
+`claude-away` starts [Claude Code](https://code.claude.com) so it keeps working while you are away from the machine:
+
+```bash
+cd ~/Projects/whatever
+claude-away                          # or: claude-away --permission-mode auto
+```
+
+- Runs in a tmux session (`claude`): close the terminal or press `Ctrl-b d` to detach, run `claude-away` again to reattach.
+- Turns on Remote Control, so the session can be steered from claude.ai/code or the Claude mobile app (requires a claude.ai login, not an API key).
+- Blocks suspend through `systemd-inhibit` only while Claude runs. Normal power saving applies again once the session ends. Shutdown still ends it.
+
+Claude Code itself is not part of the image and has to be installed separately. `CLAUDE_AWAY_SESSION` sets the tmux session name, `CLAUDE_AWAY_NAME` the Remote Control title (default: host name).
+
 # Community
 
 If you have questions about this template after following the instructions, try the following spaces:

@@ -1,0 +1,51 @@
+#!/usr/bin/bash
+# Run Claude Code so it keeps working while nobody is at the machine:
+# - inside a tmux session, so closing the terminal or logging out of SSH
+#   does not end it (detach with Ctrl-b d, run claude-away again to reattach)
+# - with Remote Control on, so it can be steered from claude.ai/code or the
+#   Claude mobile app
+# - under systemd-inhibit, so the machine does not suspend while Claude runs;
+#   the inhibitor goes away with the claude process, normal power saving
+#   applies again afterwards
+#
+# Extra arguments are passed to claude, e.g.
+#   claude-away --permission-mode auto
+# CLAUDE_AWAY_SESSION sets the tmux session name (default: claude),
+# CLAUDE_AWAY_NAME the Remote Control session title (default: host name).
+set -euo pipefail
+
+session="${CLAUDE_AWAY_SESSION:-claude}"
+
+if ! command -v claude > /dev/null 2>&1; then
+    echo "claude-away: 'claude' not found in PATH, install Claude Code first." >&2
+    exit 1
+fi
+
+# Reattach if the session is already running
+if tmux has-session -t "=${session}" 2> /dev/null; then
+    if [[ -n "${TMUX:-}" ]]; then
+        exec tmux switch-client -t "=${session}"
+    fi
+    exec tmux attach-session -t "=${session}"
+fi
+
+if (($# > 0)); then
+    echo "claude-away: starting new session '${session}' with: $*"
+fi
+
+name="${CLAUDE_AWAY_NAME:-${HOSTNAME%%.*}}"
+
+new_session=(tmux new-session -s "${session}" -c "${PWD}")
+if [[ -n "${TMUX:-}" ]]; then
+    # Inside tmux: create detached, then switch to it instead of nesting
+    new_session+=(-d)
+fi
+
+"${new_session[@]}" \
+    systemd-inhibit --what=sleep:idle --mode=block \
+    --who="Claude Code" --why="Claude Code is working (claude-away)" \
+    claude --remote-control "${name}" "$@"
+
+if [[ -n "${TMUX:-}" ]]; then
+    exec tmux switch-client -t "=${session}"
+fi
