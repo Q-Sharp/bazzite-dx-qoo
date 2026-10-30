@@ -77,5 +77,9 @@ rmdir --ignore-fail-on-non-empty /var/roothome
 systemctl enable podman.socket
 systemctl enable coolercontrold.service lactd.service
 
+UPDATER_CONFIG=/etc/bazzite-updater/config.ini
+grep -qx 'systemUpdateCommand=/usr/libexec/uupd-update' "${UPDATER_CONFIG}"
+sed -i 's|^systemUpdateCommand=.*|systemUpdateCommand=/usr/libexec/uupd-update-and-brew-upgrade.sh|' "${UPDATER_CONFIG}"
+
 ### Verify final image and contents are correct.
 bootc container lint

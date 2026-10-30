@@ -1,0 +1,6 @@
+[Unit]
+Description=Upgrade Homebrew packages for the Bazzite Updater
+
+[Service]
+Type=oneshot
+ExecStart=/home/linuxbrew/.linuxbrew/bin/brew upgrade
